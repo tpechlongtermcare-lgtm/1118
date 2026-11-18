@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0f6c72">
+  <meta name="description" content="臨床技能中心院內教具預約與借用管理系統">
+  <title>臨床技能中心｜教具預約</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#" aria-label="臨床技能中心首頁">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40"><path d="M12 4h16v8h8v16h-8v8H12v-8H4V12h8z"/><path class="pulse" d="M8 21h7l2.2-6 4.3 12 2.5-6h8"/></svg>
+        </span>
+        <span><strong>臨床技能中心</strong><small>教具預約管理系統</small></span>
+      </a>
+
+      <nav class="main-nav" aria-label="主要導覽">
+        <button class="nav-button is-active" data-view="catalog">預約教具</button>
+        <button class="nav-button" data-view="bookings">我的預約 <span class="nav-count" id="booking-count">1</span></button>
+        <button class="nav-button" data-view="admin">管理總覽</button>
+      </nav>
+
+      <button class="profile-button" type="button" aria-label="使用者選單">
+        <span class="avatar">王</span>
+        <span class="profile-copy"><strong>王怡文</strong><small>護理部 · 教職員</small></span>
+        <span class="chevron">⌄</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="prototype-note" role="status">
+      <span class="note-dot"></span>
+      <span><strong>初版示範</strong>｜預約資料目前儲存在本機瀏覽器，送出後會立即成立。</span>
+      <button id="dismiss-note" aria-label="關閉提示">×</button>
+    </div>
+
+    <section class="view" id="catalog-view">
+      <div class="hero shell">
+        <div class="hero-copy">
+          <p class="eyebrow">EQUIPMENT RESERVATION</p>
+          <h1>為下一堂臨床課程，<br><em>準備好需要的教具。</em></h1>
+          <p class="hero-description">選擇時段後即可查看即時庫存。庫存足夠會自動成立預約，無需等待審核。</p>
+        </div>
+        <div class="hero-summary" aria-label="中心教具統計">
+          <div><strong>36</strong><span>教具種類</span></div>
+          <div><strong>62</strong><span>實體教具</span></div>
+          <div><strong>30<small>分</small></strong><span>預約單位</span></div>
+        </div>
+      </div>
+
+      <section class="scheduler shell" aria-labelledby="scheduler-title">
+        <div class="scheduler-heading">
+          <div>
+            <span class="step-number">01</span>
+            <div><p class="mini-label">預約時段</p><h2 id="scheduler-title">先選擇使用時間</h2></div>
+          </div>
+          <p>歸還後保留 30 分鐘點交與消毒</p>
+        </div>
+
+        <div class="date-controls">
+          <label class="field field-date">
+            <span>使用日期</span>
+            <input id="booking-date" type="date">
+          </label>
+          <label class="field">
+            <span>開始時間</span>
+            <select id="start-time"></select>
+          </label>
+          <span class="time-arrow" aria-hidden="true">→</span>
+          <label class="field">
+            <span>結束時間</span>
+            <select id="end-time"></select>
+          </label>
+          <div class="duration-card">
+            <span class="clock-icon" aria-hidden="true">◷</span>
+            <div><small>本次時長</small><strong id="duration-label">2 小時 30 分</strong></div>
+          </div>
+        </div>
+
+        <div class="quick-date-heading">
+          <div>
+            <strong>快速選擇日期</strong>
+            <span>以下數量依你選擇的 09:00–11:30 時段即時計算</span>
+          </div>
+          <div class="date-legend" aria-label="庫存狀態說明">
+            <span><i class="available"></i>充足</span>
+            <span><i class="moderate"></i>尚可預約</span>
+            <span><i class="busy"></i>預約較多</span>
+          </div>
+        </div>
+        <div class="week-strip" id="week-strip" aria-label="未來七日可借數量"></div>
+      </section>
+
+      <div class="content-shell shell">
+        <section class="catalog-panel" aria-labelledby="catalog-title">
+          <div class="section-heading">
+            <div>
+              <span class="step-number">02</span>
+              <div><p class="mini-label">即時庫存</p><h2 id="catalog-title">選擇教具</h2></div>
+            </div>
+            <div class="result-meta"><strong id="available-type-count">—</strong> 種教具可借</div>
+          </div>
+
+          <div class="toolbar">
+            <label class="search-box">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16.2 16.2 4 4"/></svg>
+              <input id="search-input" type="search" placeholder="搜尋教具、廠牌或型號">
+            </label>
+            <label class="availability-toggle">
+              <input id="available-only" type="checkbox">
+              <span></span>只看可借
+            </label>
+            <button class="sort-button" id="sort-button" type="button">依名稱排序 ↕</button>
+          </div>
+
+          <div class="category-tabs" id="category-tabs" role="tablist" aria-label="教具分類"></div>
+
+          <div class="legend-row">
+            <span><i class="legend-dot available"></i>庫存充足</span>
+            <span><i class="legend-dot low"></i>剩餘少量</span>
+            <span><i class="legend-dot unavailable"></i>該時段已借完</span>
+          </div>
+
+          <div class="equipment-grid" id="equipment-grid"></div>
+          <div class="empty-state is-hidden" id="empty-state">
+            <span>⌕</span><h3>沒有符合條件的教具</h3><p>試試其他關鍵字、分類或預約日期。</p>
+          </div>
+        </section>
+
+        <aside class="cart-panel" id="cart-panel" aria-labelledby="cart-title">
+          <div class="cart-header">
+            <div><p class="mini-label">BORROWING LIST</p><h2 id="cart-title">借用清單</h2></div>
+            <span class="cart-badge" id="cart-badge">0</span>
+          </div>
+          <div class="cart-time" id="cart-time"></div>
+          <div class="cart-items" id="cart-items"></div>
+          <div class="cart-empty" id="cart-empty">
+            <div class="empty-illustration" aria-hidden="true"><span>＋</span></div>
+            <h3>尚未選擇教具</h3>
+            <p>從左側加入需要的項目，這裡會即時彙整數量。</p>
+          </div>
+          <div class="cart-footer">
+            <div class="cart-total"><span>共 <strong id="cart-total-types">0</strong> 種</span><span><strong id="cart-total-units">0</strong> 件教具</span></div>
+            <button class="primary-button" id="checkout-button" type="button" disabled>填寫借用資料 <span>→</span></button>
+            <p><span aria-hidden="true">✓</span> 庫存足夠即自動成立</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view is-hidden" id="bookings-view">
+      <div class="page-header shell">
+        <div><p class="eyebrow">MY RESERVATIONS</p><h1>我的預約</h1><p>追蹤即將領取、借用中及已完成的預約。</p></div>
+        <button class="primary-button compact" data-go-catalog>＋ 新增預約</button>
+      </div>
+      <div class="booking-dashboard shell">
+        <div class="status-summary" id="booking-summary"></div>
+        <div class="booking-list-wrap">
+          <div class="list-tabs" id="booking-tabs">
+            <button class="is-active" data-booking-filter="active">進行中</button>
+            <button data-booking-filter="completed">已完成</button>
+            <button data-booking-filter="all">全部</button>
+          </div>
+          <div class="booking-list" id="booking-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view is-hidden" id="admin-view">
+      <div class="page-header shell admin-header">
+        <div><p class="eyebrow">OPERATIONS OVERVIEW</p><h1>管理總覽</h1><p id="admin-date-label">今日的領取、歸還與庫存狀態。</p></div>
+        <div class="admin-actions"><button class="secondary-button">匯出紀錄</button><button class="primary-button compact">＋ 建立臨時借用</button></div>
+      </div>
+      <div class="admin-dashboard shell">
+        <div class="metric-grid" id="metric-grid"></div>
+        <div class="admin-grid">
+          <section class="admin-card schedule-card">
+            <div class="card-heading"><div><p class="mini-label">TODAY</p><h2>今日領取與歸還</h2></div><span class="live-chip"><i></i>即時</span></div>
+            <div class="admin-timeline" id="admin-timeline"></div>
+          </section>
+          <section class="admin-card utilization-card">
+            <div class="card-heading"><div><p class="mini-label">UTILIZATION</p><h2>本週熱門教具</h2></div><button class="text-button">查看報表 →</button></div>
+            <div id="utilization-list"></div>
+          </section>
+          <section class="admin-card inventory-card">
+            <div class="card-heading"><div><p class="mini-label">ATTENTION</p><h2>需留意項目</h2></div><span class="alert-count">3</span></div>
+            <div class="attention-list" id="attention-list"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <button class="mobile-cart-button is-hidden" id="mobile-cart-button" type="button">
+    <span>借用清單</span><strong id="mobile-cart-count">0</strong><span>查看 →</span>
+  </button>
+
+  <dialog class="modal" id="checkout-modal">
+    <form method="dialog" id="checkout-form">
+      <div class="modal-top">
+        <div><p class="mini-label">FINAL STEP</p><h2>確認借用資料</h2></div>
+        <button class="modal-close" value="cancel" aria-label="關閉">×</button>
+      </div>
+      <div class="modal-booking-summary" id="modal-booking-summary"></div>
+      <div class="form-grid">
+        <label class="form-field full"><span>課程／借用目的 <b>*</b></span><input name="purpose" required placeholder="例如：護理實作課－靜脈注射"></label>
+        <label class="form-field"><span>借用單位</span><input name="department" value="護理部" readonly></label>
+        <label class="form-field"><span>借用人</span><input name="borrower" value="王怡文（A02318）" readonly></label>
+        <label class="form-field"><span>使用地點 <b>*</b></span><input name="location" required placeholder="例如：臨床技能中心 302 教室"></label>
+        <label class="form-field"><span>聯絡電話 <b>*</b></span><input name="phone" required value="0912-345-678" inputmode="tel"></label>
+        <label class="form-field full"><span>備註</span><textarea name="notes" rows="3" placeholder="可填寫課程人數、需要的配件或其他說明"></textarea></label>
+      </div>
+      <label class="agreement"><input type="checkbox" required><span>我已確認借用時間與教具數量，並同意負責保管及準時歸還。</span></label>
+      <div class="modal-actions">
+        <button class="secondary-button" value="cancel">返回修改</button>
+        <button class="primary-button" id="confirm-booking-button" value="default">確認並成立預約 <span>→</span></button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="modal detail-modal" id="detail-modal">
+    <div id="detail-content"></div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <span class="toast-icon">✓</span><div><strong id="toast-title">預約已成立</strong><p id="toast-message"></p></div><button aria-label="關閉">×</button>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
